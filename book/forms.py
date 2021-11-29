@@ -6,7 +6,7 @@ from .models import Author, Book
 class BookModelForm(forms.ModelForm):
     class Meta:
         model = Book
-        fields = ("title", "author", "pub_date", "isbn", "page_count", "cover_url")
+        fields = ("title", "author", "pub_date", "pub_language", "isbn", "page_count", "cover_url")
 
 
 class FetchBookForm(forms.Form):
