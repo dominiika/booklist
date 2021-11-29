@@ -60,7 +60,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-8. You can visit the app at http://127.0.0.1:8000 or http://localhost:8000
+8. You can visit the app at http://127.0.0.1:8000.
 
 ### API usage
 The application provides one with an API endpoint which enables one to search for books with filters.
