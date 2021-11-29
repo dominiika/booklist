@@ -1,5 +1,4 @@
 from django.shortcuts import redirect, render
-from django.urls import reverse
 from django.views.generic import CreateView, ListView, UpdateView, View
 
 from .filters import BookFilter
@@ -31,8 +30,9 @@ class BookCreateView(CreateView):
         context["add_author"] = True
         return context
 
-    def get_success_url(self):
-        return reverse("book-list", kwargs={})
+    def form_valid(self, form):
+        form.save()
+        return redirect("book-list")
 
 
 class BookUpdateView(UpdateView):
@@ -44,11 +44,12 @@ class BookUpdateView(UpdateView):
         context = super(BookUpdateView, self).get_context_data(**kwargs)
         context["btn_text"] = "Save"
         context["title"] = "Update the book"
+        context["add_author"] = True
         return context
 
     def form_valid(self, form):
         form.save()
-        return redirect(reverse("book-list", kwargs={}))
+        return redirect("book-list")
 
 
 class FetchBooksView(View):
@@ -119,7 +120,6 @@ def save_book(request, book_id):
     book_data = validate_fields(book_data)
 
     author = handle_author_data(book_data)
-
     book_data = handle_pub_date_data(book_data)
 
     Book.objects.create(author=author, **book_data)
@@ -137,5 +137,6 @@ class AuthorCreateView(CreateView):
         context["title"] = "Add an author"
         return context
 
-    def get_success_url(self):
-        return reverse("book-list", kwargs={})
+    def form_valid(self, form):
+        form.save()
+        return redirect("book-list")

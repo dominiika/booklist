@@ -24,17 +24,19 @@ class TestViews(TestCase):
     def _create_book(self, **kwargs):
         return Book.objects.create(**kwargs)
 
-    def test_book_list_view(self):
+    def test_book_list_view_returns_correct_books(self):
         self._create_book(title="Book1")
         self._create_book(title="Book2")
 
         url = reverse("book-list")
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context["book_list"]), 2)
+        expected_status_code = 200
+        expected_book_count = 2
+        self.assertEqual(response.status_code, expected_status_code)
+        self.assertEqual(len(response.context["book_list"]), expected_book_count)
 
-    def test_book_create_view(self):
+    def test_book_create_view_creates_book(self):
         data = {
             "title": "Book1",
             "pub_date": "2021",
@@ -46,7 +48,8 @@ class TestViews(TestCase):
 
         book = Book.objects.get(title=data["title"])
 
-        self.assertEqual(response.status_code, 302)
+        expected_status_code = 302
+        self.assertEqual(response.status_code, expected_status_code)
         self._assert_book_has_correct_fields(book, data)
 
     def _assert_book_has_correct_fields(self, book, data):
@@ -54,7 +57,7 @@ class TestViews(TestCase):
         self.assertEqual(book.pub_date, int(data["pub_date"]))
         self.assertEqual(book.isbn, data["isbn"])
 
-    def test_book_update_view(self):
+    def test_book_update_view_updates_book(self):
         book = self._create_book(
             title="Book1", pub_date=2020, isbn="abcd-1111-1111-2222"
         )
@@ -69,22 +72,24 @@ class TestViews(TestCase):
 
         book.refresh_from_db()
 
-        self.assertEqual(response.status_code, 302)
+        expected_status_code = 302
+        self.assertEqual(response.status_code, expected_status_code)
         self._assert_book_has_correct_fields(book, new_data)
 
-    def test_save_book_view(self):
+    def test_save_book_view_saves_books(self):
         author = self._create_author(self.books_data[0]["author"])
         session = self.client.session
         session["books"] = self.books_data
         session.save()
 
-        url = reverse("save", args=[self.books_data[0]["temp_id"]])
+        url = reverse("save-book", args=[self.books_data[0]["temp_id"]])
         response = self.client.post(url)
 
         book = Book.objects.get(title=self.books_data[0]["title"])
 
+        expected_status_code = 302
         self._assert_book_has_correct_fields(book, self.books_data[0])
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, expected_status_code)
         self.assertEqual(book.author, author)
 
     def _create_author(self, name):
@@ -95,23 +100,24 @@ class TestViews(TestCase):
         session["books"] = self.books_data
         session.save()
 
-        url = reverse("save", args=[self.books_data[0]["temp_id"]])
+        url = reverse("save-book", args=[self.books_data[0]["temp_id"]])
         response = self.client.post(url)
 
         book = Book.objects.get(title=self.books_data[0]["title"])
         author = Author.objects.get(name=self.books_data[0]["author"])
 
-        self.assertEqual(response.status_code, 302)
+        expected_status_code = 302
+        self.assertEqual(response.status_code, expected_status_code)
         self._assert_book_has_correct_fields(book, self.books_data[0])
         self.assertEqual(author.name, self.books_data[0]["author"])
         self.assertEqual(book.author, author)
 
     def test_saves_pub_date_in_correct_format(self):
         data = {"title": "test title", "pub_date": "2021-04-04"}
-        expected_pub_date = "2021"
 
         result = handle_pub_date_data(data)
 
+        expected_pub_date = "2021"
         self.assertEqual(result["pub_date"], expected_pub_date)
 
     def test_validates_fields(self):
@@ -128,7 +134,7 @@ class TestViews(TestCase):
 
         self.assertEqual(result, expected_result)
 
-    def test_author_create_view(self):
+    def test_author_create_view_creates_author(self):
         data = {
             "name": "Oscar Wilde",
         }
@@ -138,5 +144,6 @@ class TestViews(TestCase):
 
         author = Author.objects.get(name=data["name"])
 
-        self.assertEqual(response.status_code, 302)
+        expected_status_code = 302
+        self.assertEqual(response.status_code, expected_status_code)
         self.assertEqual(author.name, data["name"])

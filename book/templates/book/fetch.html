@@ -36,7 +36,7 @@
         <td>{{book.isbn}}</td>
         <td>{{book.page_count}}</td>
         <td>{{book.pub_language}}</td>
-        <td><a href="{% url 'save' book.temp_id %}" class="edit-btn btn-small waves-effect waves-light btn modal-trigger">Save</a></td>
+        <td><a href="{% url 'save-book' book.temp_id %}" class="edit-btn btn-small waves-effect waves-light btn modal-trigger">Save</a></td>
       </tr>
       {% endfor %}
       {% endif %}

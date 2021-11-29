@@ -13,7 +13,6 @@ class BookApiFetcher:
         query = "?q="
         for k, v in kwargs.items():
             query = self._prepare_query(k, v, query)
-        print(query)
         result = self._fetch_result(query)
         return result
 
@@ -29,11 +28,14 @@ class BookApiFetcher:
 
     def _prepare_data(self, response):
         books = []
+
         for i, item in enumerate(response["items"]):
             volume_info = item["volumeInfo"]
+
             authors = volume_info.get("authors")
             industry_identifiers = volume_info.get("industryIdentifiers")
             image_links = volume_info.get("imageLinks")
+
             data = {
                 "temp_id": i,
                 "title": volume_info.get("title", NOT_SPECIFIED_INFO),
@@ -49,4 +51,5 @@ class BookApiFetcher:
                 else NOT_SPECIFIED_INFO,
             }
             books.append(data)
+
         return books

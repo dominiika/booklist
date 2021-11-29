@@ -1,9 +1,9 @@
-from book.models import Book
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from book.models import Book
 from rest.serializers import BookSerializer
 
 
@@ -11,7 +11,7 @@ class BookListApiViewTests(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-    def test_returns_book_list_api_view(self):
+    def test_book_list_api_view_returns_books(self):
         self._create_book(title="Book1")
         self._create_book(title="Book2")
 

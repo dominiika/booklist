@@ -1,5 +1,4 @@
 from unittest import mock
-from unittest.mock import Mock
 
 from django.test import TestCase
 
@@ -7,10 +6,13 @@ from book.services import BookApiFetcher
 
 
 class BookAPIFetcherTests(TestCase):
+    def setUp(self):
+        self.mocked_api_response = self._preapre_mocked_api_response()
+        self.expected_response = self._prepare_expected_response()
+
     @mock.patch("book.services.requests.get")
     def test_fetches_and_returns_correct_data(self, mock_get):
-        self._prepare_data()
-        mock_response = Mock()
+        mock_response = mock.Mock()
         mock_response.json.return_value = self.mocked_api_response
         mock_response.status_code = 200
         mock_get.return_value = mock_response
@@ -20,8 +22,8 @@ class BookAPIFetcherTests(TestCase):
 
         self.assertEqual(result, self.expected_response)
 
-    def _prepare_data(self):
-        self.mocked_api_response = {
+    def _preapre_mocked_api_response(self):
+        mocked_api_response = {
             "kind": "books#volumes",
             "totalItems": 1,
             "items": [
@@ -45,8 +47,10 @@ class BookAPIFetcherTests(TestCase):
                 }
             ],
         }
+        return mocked_api_response
 
-        self.expected_response = [
+    def _prepare_expected_response(self):
+        expected_response = [
             {
                 "author": "Oscar Wilde",
                 "cover_url": "http://books.google.com/test123",
@@ -58,3 +62,4 @@ class BookAPIFetcherTests(TestCase):
                 "title": "The Picture of Dorian Gray",
             }
         ]
+        return expected_response

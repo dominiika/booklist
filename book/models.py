@@ -4,19 +4,19 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
-class Author(models.Model):
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
-
-
 def current_year():
     return datetime.date.today().year
 
 
 def max_value_current_year(value):
     return MaxValueValidator(current_year())(value)
+
+
+class Author(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 
 class Book(models.Model):
