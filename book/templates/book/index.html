@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load materializecss %}
+
+{% block content %}
+<div class="container">
+  <h3 class="center">Book List</h3>
+  <br />
+
+  <a href="{% url 'book-create' %}" class="waves-effect waves-light btn"><i class="material-icons left">add</i>Add</a>
+  <a class="waves-effect waves-light btn modal-trigger" href="#search_modal"><i class="material-icons left">search</i>Search</a>
+  <a class="waves-effect waves-light btn" href="{% url 'fetch' %}">Fetch from Google</a>
+  <a class="waves-effect waves-light btn" href="{% url 'book-list' %}">Show all</a>
+
+
+  <table class="highlight striped centered responsive-table">
+    <thead>
+      <tr>
+        <th>Cover</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Publication date</th>
+        <th>ISBN</th>
+        <th>Page count</th>
+        <th>Publication language</th>
+        <th>Options</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      {% for book in filter.qs %}
+      <tr data-book-id="{{book.id}}" data-book-title="{{book.title}}">
+        <td class="img-wrapper"><img class="cover-img centered materialboxed responsive-img" src="{{book.cover_url}}" alt="" /></td>
+        <td>{{book.title}}</td>
+        <td>{% if book.author %}{{book.author}}{% else %}{{not_specified_str}}{% endif %}</td>
+        <td>{% if book.pub_date %}{{book.pub_date}}{% else %}{{not_specified_str}}{% endif %}</td>
+        <td>{% if book.isbn %}{{book.isbn}}{% else %}{{not_specified_str}}{% endif %}</td>
+        <td>{% if book.page_count %}{{book.page_count}}{% else %}{{not_specified_str}}{% endif %}</td>
+        <td>{% if book.pub_language %}{{book.pub_language}}{% else %}{{not_specified_str}}{% endif %}</td>
+        <td><a href="{% url 'book-update' book.id %}" class="edit-btn btn-small waves-effect waves-light btn modal-trigger"><i class="material-icons">edit</i></a></td>
+
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div id="search_modal" class="modal">
+  <form class="col s12" method="GET">
+    {% csrf_token %}
+    <div class="modal-content">
+      <h4>Search for books</h4>
+      {{ filter.form|materializecss }}
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">close</a>
+      <button type='submit' class="btn modal-trigger search-btn">Search</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems, {});
+    var elems2 = document.querySelectorAll('.materialboxed');
+    var instances = M.Materialbox.init(elems2, {});
+  });
+</script>
+
+{% endblock %}

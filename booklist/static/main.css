@@ -1,0 +1,7 @@
+.cover-img {
+  height: 30%;
+  width: 30%;
+  display: block;
+  margin: auto;
+  cursor: pointer !important;
+}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load materializecss %}
+
+{% block content %}
+<div class="container">
+  <h4>{{ title }}</h3>
+    <form class="col s12" method="POST" action=".">
+      {% csrf_token %}
+      {{form|materializecss}}
+      <button type='submit' class="btn save-btn">{{btn_text}}</button>
+    </form>
+</div>
+{% endblock %}
