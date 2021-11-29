@@ -8,6 +8,9 @@
       {% csrf_token %}
       {{form|materializecss}}
       <button type='submit' class="btn save-btn">{{btn_text}}</button>
+      {% if add_author %}
+        <a href="{% url 'author-create' %}" class="btn">Add author</a>
+      {% endif %}
     </form>
 </div>
 {% endblock %}

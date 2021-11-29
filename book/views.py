@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.views.generic import CreateView, ListView, UpdateView, View
 
 from .filters import BookFilter
-from .forms import BookModelForm, FetchBookForm
+from .forms import AuthorModelForm, BookModelForm, FetchBookForm
 from .models import Author, Book
 from .services import NOT_SPECIFIED_INFO, BookApiFetcher
 
@@ -28,6 +28,7 @@ class BookCreateView(CreateView):
         context = super(BookCreateView, self).get_context_data(**kwargs)
         context["btn_text"] = "Save"
         context["title"] = "Add a book"
+        context["add_author"] = True
         return context
 
     def get_success_url(self):
@@ -123,3 +124,18 @@ def save_book(request, book_id):
 
     Book.objects.create(author=author, **book_data)
     return redirect("/books")
+
+
+class AuthorCreateView(CreateView):
+    template_name = "book/form.html"
+    model = Author
+    form_class = AuthorModelForm
+
+    def get_context_data(self, **kwargs):
+        context = super(AuthorCreateView, self).get_context_data(**kwargs)
+        context["btn_text"] = "Save"
+        context["title"] = "Add an author"
+        return context
+
+    def get_success_url(self):
+        return reverse("book-list", kwargs={})

@@ -39,3 +39,10 @@ class UrlsTests(TestCase):
         url = reverse("save", kwargs={"book_id": book_id})
 
         self.assertEqual(resolve(url).func.__name__, views.save_book.__name__)
+
+    def test_author_create_view(self):
+        url = reverse("author-create")
+
+        self.assertEqual(
+            resolve(url).func.__name__, views.AuthorCreateView.as_view().__name__
+        )

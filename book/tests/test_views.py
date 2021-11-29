@@ -127,3 +127,16 @@ class TestViews(TestCase):
         result = validate_fields(data)
 
         self.assertEqual(result, expected_result)
+
+    def test_author_create_view(self):
+        data = {
+            "name": "Oscar Wilde",
+        }
+
+        url = reverse("author-create")
+        response = self.client.post(url, data)
+
+        author = Author.objects.get(name=data["name"])
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(author.name, data["name"])
